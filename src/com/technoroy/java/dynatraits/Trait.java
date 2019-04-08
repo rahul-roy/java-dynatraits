@@ -1,4 +1,9 @@
 package com.technoroy.java.dynatraits;
-public interface Trait {
 
+/**
+ * A marker interface for identifying a trait.
+ * @author Rahul Roy
+ *
+ */
+public interface Trait {
 }
