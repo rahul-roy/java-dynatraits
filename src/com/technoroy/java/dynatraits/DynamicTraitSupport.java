@@ -15,8 +15,6 @@ public interface DynamicTraitSupport {
 	class DynamicInvocationHandler implements InvocationHandler {
 		@Override
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			// System.out.println("Invoked method: {} " +
-			// method.getDeclaringClass().getSimpleName() + " -> " + method.getName());
 			Object targetClassName = method.getDeclaringClass().getName();
 			Object targetObject = traitsRegistry.get(targetClassName);
 
