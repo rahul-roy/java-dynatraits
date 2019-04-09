@@ -6,7 +6,7 @@ Java being a strongly typed programming language, enforces a very strict decipli
 
 The concept of Traits is implemented in Java using Interfaces, which contain default methods and variables to allow maintaining an object's state. However, these interfaces then have to be tightly coupled with the class declaration, and as discussed above one cannot dynamically modify an interface association.
 
-The Java-DynaTraits is a very simple and minimilistic library, that allows dynamic association of Traits/Interfaces; such that new interfaces could be added to your class at runtime, without really having to declare them during prior to the compilation of the class.
+The Java-DynaTraits is a very simple and minimilistic library, that allows dynamic association of Traits/Interfaces; such that new interfaces could be added to your class at runtime, without really having to declare them, prior to the compilation of the class.
 
 The core concept behind the code is to use a subscription model, which allows registering interfaces (or in other words Traits) with a class, in runtime, and then using an Invocation Handler to delegate function calls to the relevant subsriptions.
 
