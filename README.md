@@ -43,3 +43,6 @@ public interface NamedEntity extends Document, Trait {
 	}
 }
 ```
+
+## Download
+A binary distribution (jar) of the library could be found [here](dist/java-dynatraits-1.0.0.jar).
