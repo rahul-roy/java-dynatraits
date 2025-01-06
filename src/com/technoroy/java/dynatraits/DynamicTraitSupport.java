@@ -9,43 +9,71 @@ import java.util.List;
 import java.util.Map;
 
 public interface DynamicTraitSupport {
-	Map<String, Object> traitsRegistry = new HashMap<>();
 
-	// Default invocation handler implementation
-	class DynamicInvocationHandler implements InvocationHandler {
-		@Override
-		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			Object targetClassName = method.getDeclaringClass().getName();
-			Object targetObject = traitsRegistry.get(targetClassName);
+    /**
+     * A custom InvocationHandler that delegates method calls to the
+     * backing objects (this class or provided traits) based on the
+     * method's declaring interface.
+     */
+    class DynamicInvocationHandler implements InvocationHandler {
 
-			return method.invoke(targetObject, args);
-		}
-	}
+        private final Map<Class<?>, Object> traitMapping;
 
-	public default Object withTraits(Trait... traits) throws Exception {
-		List<Class<?>> classes = getRelevantClasses(traits);
+        public DynamicInvocationHandler(Map<Class<?>, Object> traitMapping) {
+            this.traitMapping = traitMapping;
+        }
 
-		return Proxy.newProxyInstance(Trait.class.getClassLoader(), classes.toArray(new Class[classes.size()]),
-		        new DynamicInvocationHandler());
-	}
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            Class<?> declaringClass = method.getDeclaringClass();
+            Object target = traitMapping.get(declaringClass);
 
-	public default List<Class<?>> getRelevantClasses(Trait... traits) {
-		List<Class<?>> classes = new ArrayList<>();
+            // If we can't find an object handling this interface,
+            // decide how you want to handle this case:
+            if (target == null) {
+                // Example: throw an exception
+                throw new UnsupportedOperationException(
+                    "No trait found for " + declaringClass.getName() + 
+                    " to invoke method " + method.getName()
+                );
+            }
 
-		// Get Interfaces from the current class
-		for (Class<?> interfaceRef : this.getClass().getInterfaces()) {
-			classes.add(interfaceRef);
-			traitsRegistry.put(interfaceRef.getName(), this);
-		}
+            return method.invoke(target, args);
+        }
+    }
 
-		// Get Interfaces from the arguments
-		for (Trait trait : traits) {
-			for (Class<?> interfaceRef : trait.getClass().getInterfaces()) {
-				classes.add(interfaceRef);
-				traitsRegistry.put(interfaceRef.getName(), trait);
-			}
-		}
+    /**
+     * Create a dynamic proxy that merges the interfaces of 'this' object
+     * and any number of Trait instances. The returned Object implements all
+     * those interfaces, and delegates method calls appropriately.
+     *
+     * @param traits One or more Trait instances
+     * @return A dynamic proxy that implements this object's and the traits' interfaces
+     */
+    default Object withTraits(Trait... traits) {
+        // Collect interface -> instance mappings
+        Map<Class<?>, Object> traitMapping = new HashMap<>();
+        List<Class<?>> interfaces = new ArrayList<>();
 
-		return classes;
-	}
+        // 1. Add interfaces from 'this' object
+        for (Class<?> iface : this.getClass().getInterfaces()) {
+            interfaces.add(iface);
+            traitMapping.put(iface, this);
+        }
+
+        // 2. Add interfaces from all traits
+        for (Trait trait : traits) {
+            for (Class<?> iface : trait.getClass().getInterfaces()) {
+                interfaces.add(iface);
+                traitMapping.put(iface, trait);
+            }
+        }
+
+        // Create the proxy
+        return Proxy.newProxyInstance(
+            this.getClass().getClassLoader(),
+            interfaces.toArray(new Class[0]),
+            new DynamicInvocationHandler(traitMapping)
+        );
+    }
 }
