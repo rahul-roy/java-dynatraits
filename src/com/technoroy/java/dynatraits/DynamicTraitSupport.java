@@ -29,7 +29,7 @@ public interface DynamicTraitSupport {
             Object target = traitMapping.get(declaringClass);
 
             // If we can't find an object handling this interface,
-            // need to decide how you want to handle this case:
+            // need to decide how you want to handle this case.
             if (target == null) {
                 // for now throwing an exception
                 throw new UnsupportedOperationException(
