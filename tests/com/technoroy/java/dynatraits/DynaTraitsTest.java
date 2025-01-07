@@ -9,62 +9,62 @@ import com.technoroy.java.dynatraits.traits.PricedEntity;
 
 class DynaTraitsTest {
 
-    @Test
-    void testTraitFunctionCalls() {
-        try {
-        var catalogWithTraits = (CatalogInterface & NamedEntity & PricedEntity) (new Catalog()).withTraits(
-            new NamedEntity() {},
-            new PricedEntity() {}
-        );
-        
-        // Verify function call from the NamedEntity trait
-        String name = "Dynamic Traits with Java";
-        catalogWithTraits.setName(name);
-        assert catalogWithTraits.getName().equals(name);
+	@Test
+	void testTraitFunctionCalls() {
+		try {
+			var catalogWithTraits = (CatalogInterface & NamedEntity & PricedEntity) (new Catalog())
+					.withTraits(
+							new NamedEntity() {},
+							new PricedEntity() {}
+					);
 
-        // Verify function call from the PricedEntity trait
-        double price = 20.00;
-        catalogWithTraits.setPrice(price);
-        assert catalogWithTraits.getPrice().equals(price);
+			// Verify function call from the NamedEntity trait
+			String name = "Dynamic Traits with Java";
+			catalogWithTraits.setName(name);
+			assert catalogWithTraits.getName().equals(name);
 
-        // Verify a function call from the Catalog class itself.
-        assert catalogWithTraits.isConfidential() == true;
-        } catch (Exception e) {
-            fail(e);
-        }
-    }
-    
-    @Test
-    void testFunctionCallsFromClass() {
-        try {
-        var catalogWithTraits = (CatalogInterface & NamedEntity & PricedEntity) (new Catalog()).withTraits(
-            new NamedEntity() {},
-            new PricedEntity() {}
-        );
+			// Verify function call from the PricedEntity trait
+			double price = 20.00;
+			catalogWithTraits.setPrice(price);
+			assert catalogWithTraits.getPrice().equals(price);
 
-        // Verify a function call from the Catalog class itself.
-        assert catalogWithTraits.isConfidential() == true;
-        } catch (Exception e) {
-            fail(e);
-        }
-    }
-    
-    /**
-     * An interface that declares the public methods for the implementation
-     */
-    interface CatalogInterface {
-        public boolean isConfidential();
-    }
+			// Verify a function call from the Catalog class itself.
+			assert catalogWithTraits.isConfidential() == true;
+		} catch (Exception e) {
+			fail(e);
+		}
+	}
 
-    /**
-     * A simple class that implements DynamicTraitSupport
-     */
-    class Catalog implements CatalogInterface, DynamicTraitSupport {
-        @Override
-        public boolean isConfidential() {
-            return true;
-        }
-    }
+	@Test
+	void testFunctionCallsFromClass() {
+		try {
+			var catalogWithTraits = (CatalogInterface & NamedEntity & PricedEntity) (new Catalog())
+					.withTraits(
+							new NamedEntity() {},
+							new PricedEntity() {}
+					);
+
+			// Verify a function call from the Catalog class itself.
+			assert catalogWithTraits.isConfidential() == true;
+		} catch (Exception e) {
+			fail(e);
+		}
+	}
+
+	/**
+	 * An interface that declares the public methods for the implementation
+	 */
+	interface CatalogInterface {
+		public boolean isConfidential();
+	}
+
+	/**
+	 * A simple class that implements DynamicTraitSupport
+	 */
+	class Catalog implements CatalogInterface, DynamicTraitSupport {
+		@Override
+		public boolean isConfidential() {
+			return true;
+		}
+	}
 }
-
-
