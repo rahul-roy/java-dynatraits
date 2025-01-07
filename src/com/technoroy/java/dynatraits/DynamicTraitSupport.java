@@ -29,9 +29,9 @@ public interface DynamicTraitSupport {
             Object target = traitMapping.get(declaringClass);
 
             // If we can't find an object handling this interface,
-            // decide how you want to handle this case:
+            // need to decide how you want to handle this case:
             if (target == null) {
-                // Example: throw an exception
+                // for now throwing an exception
                 throw new UnsupportedOperationException(
                     "No trait found for " + declaringClass.getName() + 
                     " to invoke method " + method.getName()
